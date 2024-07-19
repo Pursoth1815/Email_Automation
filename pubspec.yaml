@@ -1,14 +1,20 @@
 name: thiran_tech
 description: "A new Flutter project."
-publish_to: 'none'
+publish_to: "none"
 version: 1.0.0
 
 environment:
-  sdk: '>=3.4.3 <4.0.0'
+  sdk: ">=3.4.3 <4.0.0"
 
 dependencies:
+  cloud_firestore: ^5.1.0
+  firebase_core: ^3.2.0
+  firebase_database: ^11.0.3
+  flutter_riverpod: ^2.5.1
+  firebase_storage: ^12.1.1
   flutter:
     sdk: flutter
+  image_picker: ^1.1.2
 
 dev_dependencies:
   flutter_test:

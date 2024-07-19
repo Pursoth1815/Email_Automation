@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "253511843396",
+    "project_id": "thiran-tech",
+    "storage_bucket": "thiran-tech.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:253511843396:android:370ff282acdb53713ec611",
+        "android_client_info": {
+          "package_name": "com.application.thiran_tech"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAKwEMDusxWPuuqg2b0KeTD0ErZSAW0j5s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
