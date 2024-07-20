@@ -1,15 +1,35 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:thiran_tech/core/res/colors.dart';
 import 'package:thiran_tech/firebase_options.dart';
-import 'package:thiran_tech/res/constant.dart';
-import 'package:thiran_tech/view/pages/ticket_list.dart';
+import 'package:thiran_tech/core/res/constant.dart';
+import 'package:thiran_tech/src/view/Pages/Ticket/ticket_list.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const MainApp());
+  await AwesomeNotifications().initialize(
+    null,
+    [
+      NotificationChannel(
+        channelKey: 'thiran_tech_channel',
+        channelName: 'thiran_tech',
+        channelDescription: 'App Push Notification',
+        importance: NotificationImportance.Max,
+        defaultColor: AppColors.colorPrimary,
+        ledColor: AppColors.colorPrimaryDark,
+        playSound: true,
+        enableVibration: true,
+        icon: null,
+      )
+    ],
+    debug: true,
+  );
+  runApp(const ProviderScope(child: MainApp()));
 }
 
 class MainApp extends StatelessWidget {

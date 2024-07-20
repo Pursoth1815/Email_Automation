@@ -6,4 +6,6 @@ class AppStrings {
   static const String error_msg = "Something Went Wrong";
 
   static const String search = "search...";
+
+  static const String ticketInsertMsg = "Ticket Inserted Successfully...";
 }
