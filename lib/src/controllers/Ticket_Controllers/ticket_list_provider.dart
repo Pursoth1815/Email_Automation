@@ -1,10 +1,11 @@
+import 'dart:io';
+
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:thiran_tech/core/res/strings.dart';
 import 'package:thiran_tech/core/services/database_services.dart';
 import 'package:thiran_tech/src/models/ticket_model.dart';
-import 'dart:io';
 
 class TicketStateNotifier extends StateNotifier<List<TicketModel>> {
   final DatabaseServices _databaseServices;
@@ -62,7 +63,8 @@ class TicketStateNotifier extends StateNotifier<List<TicketModel>> {
   }
 }
 
-final ticketProvider = StateNotifierProvider<TicketStateNotifier, List<TicketModel>>((ref) {
+final ticketProvider =
+    StateNotifierProvider<TicketStateNotifier, List<TicketModel>>((ref) {
   final databaseServices = ref.read(databaseServicesProvider);
   return TicketStateNotifier(databaseServices);
 });

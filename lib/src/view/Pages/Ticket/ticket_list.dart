@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:thiran_tech/core/services/internet_connection_service.dart';
-import 'package:thiran_tech/core/utils.dart';
-import 'package:thiran_tech/src/controllers/ticket_list_provider.dart';
 import 'package:thiran_tech/core/res/colors.dart';
 import 'package:thiran_tech/core/res/constant.dart';
+import 'package:thiran_tech/core/services/internet_connection_service.dart';
+import 'package:thiran_tech/core/utils.dart';
+import 'package:thiran_tech/src/controllers/Ticket_Controllers/ticket_list_provider.dart';
 import 'package:thiran_tech/src/view/Pages/Ticket/add_ticket.dart';
 
 class TicketList extends ConsumerWidget {
@@ -27,8 +27,8 @@ class TicketList extends ConsumerWidget {
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.colorPrimaryLite,
-                minimumSize: const Size(150, 50),
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                minimumSize: Size(150, 50),
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(25.0),
                 ),
@@ -52,7 +52,8 @@ class TicketList extends ConsumerWidget {
               ? const Center(child: Text("Add list"))
               : connectionStatus.isConnected
                   ? ListView.separated(
-                      separatorBuilder: (context, index) => const SizedBox(height: 15),
+                      separatorBuilder: (context, index) =>
+                          const SizedBox(height: 15),
                       itemCount: ticketList.length,
                       itemBuilder: (context, index) {
                         final model = ticketList[index];

@@ -3,9 +3,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:thiran_tech/core/res/colors.dart';
-import 'package:thiran_tech/firebase_options.dart';
 import 'package:thiran_tech/core/res/constant.dart';
-import 'package:thiran_tech/src/view/Pages/Ticket/ticket_list.dart';
+import 'package:thiran_tech/firebase_options.dart';
+import 'package:thiran_tech/src/view/Pages/GitHub_Repo/github_list.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -40,7 +40,7 @@ class MainApp extends StatelessWidget {
     AppConstants.init(context);
 
     return const MaterialApp(
-      home: TicketList(),
+      home: GithubList(),
     );
   }
 }

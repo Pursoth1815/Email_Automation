@@ -13,12 +13,13 @@ class DatabaseServices {
   late final CollectionReference _ticketRef;
 
   DatabaseServices() {
-    _ticketRef = _fireStore.collection(TICKET_COLLETCION_REF).withConverter<TicketModel>(
-          fromFirestore: (snapshots, _) => TicketModel.fromMap(
-            snapshots.data()!,
-          ),
-          toFirestore: (ticket, _) => ticket.toMap(),
-        );
+    _ticketRef =
+        _fireStore.collection(TICKET_COLLETCION_REF).withConverter<TicketModel>(
+              fromFirestore: (snapshots, _) => TicketModel.fromMap(
+                snapshots.data()!,
+              ),
+              toFirestore: (ticket, _) => ticket.toMap(),
+            );
   }
 
   Stream<QuerySnapshot> getTickets() {
@@ -38,7 +39,8 @@ class DatabaseServices {
     try {
       final storageRef = FirebaseStorage.instance.ref();
 
-      final imageRef = storageRef.child('ticket_attachments/${DateTime.now().millisecondsSinceEpoch}.jpg');
+      final imageRef = storageRef.child(
+          'ticket_attachments/${DateTime.now().millisecondsSinceEpoch}.jpg');
 
       final uploadTask = imageRef.putFile(imageFile);
 

@@ -1,10 +1,10 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:thiran_tech/core/res/colors.dart';
 import 'package:thiran_tech/core/utils.dart';
-import 'package:thiran_tech/src/controllers/ticket_list_provider.dart';
+import 'package:thiran_tech/src/controllers/Ticket_Controllers/ticket_list_provider.dart';
 import 'package:thiran_tech/src/models/ticket_model.dart';
 
 class AddTicketList extends ConsumerStatefulWidget {
@@ -49,7 +49,9 @@ class _AddTicketListState extends ConsumerState<AddTicketList> {
               final imgFile = await Utils().pickImage();
 
               if (imgFile != null) {
-                String imgPath = await ref.read(ticketProvider.notifier).uploadImage(imgFile);
+                String imgPath = await ref
+                    .read(ticketProvider.notifier)
+                    .uploadImage(imgFile);
 
                 if (imgPath.isNotEmpty) {
                   TicketModel model = TicketModel(
@@ -61,7 +63,9 @@ class _AddTicketListState extends ConsumerState<AddTicketList> {
                   );
 
                   try {
-                    DocumentReference docRef = await ref.read(ticketProvider.notifier).addTicket(model);
+                    DocumentReference docRef = await ref
+                        .read(ticketProvider.notifier)
+                        .addTicket(model);
                     if (docRef.id.isNotEmpty) {
                       ref.read(ticketProvider.notifier).pushNotification();
                       print("data inserted");
