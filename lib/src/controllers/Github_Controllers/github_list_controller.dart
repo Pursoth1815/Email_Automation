@@ -60,12 +60,14 @@ class RepositoryNotifier extends StateNotifier<RepositoryState> {
             RepositoryState(pageCount: 1, repositories: [], isLoading: false));
 
   void incrementPageCount() {
+    print(state.isFilterON);
+    print(state.maxCountReached);
     if (!state.maxCountReached && !state.isFilterON) {
       state =
           state.copyWith(pageCount: state.pageCount + 1, isPageLoading: true);
       Future.delayed(
         Durations.extralong4,
-        () => refreshRepositories(totalCount: state.totalCount),
+        () => refreshRepositories(),
       );
     }
   }
@@ -97,15 +99,22 @@ class RepositoryNotifier extends StateNotifier<RepositoryState> {
       List<Map<String, dynamic>> repositories =
           await NetworkApiServices().getApi();
 
+      state = state.copyWith(
+          totalCount: repositories.length,
+          maxCountReached: repositories.length == state.repositories.length);
+
       List<Map<String, dynamic>> dataList = repositories.map(
         (element) {
           return GithubListModel.fromAPI(element).toMap();
         },
       ).toList();
+
+      print(dataList.length);
+
       bool flag = await _dbHelper.bulkInsert(dataList);
 
       if (flag) {
-        await refreshRepositories(totalCount: dataList.length);
+        await refreshRepositories();
       }
     } catch (e) {
       state = state.copyWith(
@@ -113,7 +122,7 @@ class RepositoryNotifier extends StateNotifier<RepositoryState> {
     }
   }
 
-  Future<void> refreshRepositories({int totalCount = 0}) async {
+  Future<void> refreshRepositories() async {
     if (!state.isLoading && !state.isPageLoading)
       state = state.copyWith(isLoading: true);
     try {
@@ -127,8 +136,8 @@ class RepositoryNotifier extends StateNotifier<RepositoryState> {
       state = state.copyWith(
           repositories: [...state.repositories, ...dataList],
           isLoading: false,
-          totalCount: totalCount,
-          maxCountReached: totalCount == state.repositories.length,
+          maxCountReached:
+              state.totalCount == [...state.repositories, ...dataList].length,
           isPageLoading: false);
     } catch (e) {
       state = state.copyWith(

@@ -39,9 +39,8 @@ class RepositoryListsState extends ConsumerState<RepositoryLists> {
       appBar: _homeAppbar(),
       body: Shimmer(
         child: Container(
-          width: MediaQuery.of(context).size.width,
-          height:
-              MediaQuery.of(context).size.height - AppConstants.appBarHeight,
+          width: AppConstants.screenWidth,
+          height: AppConstants.screenHeight - AppConstants.appBarHeight,
           decoration: BoxDecoration(
             color: AppColors.whiteLite,
             borderRadius: BorderRadius.vertical(
@@ -49,9 +48,8 @@ class RepositoryListsState extends ConsumerState<RepositoryLists> {
             ),
           ),
           child: Container(
-            width: MediaQuery.of(context).size.width,
-            height:
-                MediaQuery.of(context).size.height - AppConstants.appBarHeight,
+            width: AppConstants.screenWidth,
+            height: AppConstants.screenHeight - AppConstants.appBarHeight,
             margin: EdgeInsets.only(top: 20),
             decoration: BoxDecoration(
               color: AppColors.whiteLite,

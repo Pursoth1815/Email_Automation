@@ -20,8 +20,25 @@ class TicketStateNotifier extends StateNotifier<List<TicketModel>> {
     return await _databaseServices.addTicket(model);
   }
 
-  Future<String> uploadImage(File imageFile) async {
-    return await _databaseServices.uploadImage(imageFile);
+  Future<String> uploadImage(File imageFile, TicketModel model) async {
+    String img_url = await _databaseServices.uploadImage(imageFile);
+    print(titleProvider.name);
+    model = model.copyWith(attachment: img_url);
+
+    if (img_url.isNotEmpty) {
+      try {
+        DocumentReference docRef = await addTicket(model);
+        if (docRef.id.isNotEmpty) {
+          pushNotification();
+          print("data inserted");
+        } else {
+          print("data not inserted");
+        }
+      } catch (e) {
+        print("error in insertion");
+      }
+    }
+    return '';
   }
 
   Future<void> pushNotification() async {
@@ -68,3 +85,8 @@ final ticketProvider =
   final databaseServices = ref.read(databaseServicesProvider);
   return TicketStateNotifier(databaseServices);
 });
+
+final titleProvider = StateProvider<String>((ref) => '');
+final descriptionProvider = StateProvider<String>((ref) => '');
+final locationProvider = StateProvider<String>((ref) => '');
+final fileProvider = StateProvider<File>((ref) => File(''));

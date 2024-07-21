@@ -15,6 +15,21 @@ class TicketModel {
     required this.attachment,
   });
 
+  TicketModel copyWith({
+    String? title,
+    String? description,
+    String? location,
+    DateTime? reportedDate,
+    String? attachment,
+  }) {
+    return TicketModel(
+        title: title ?? this.title,
+        description: description ?? this.description,
+        location: location ?? this.description,
+        reportedDate: reportedDate ?? this.reportedDate,
+        attachment: attachment ?? this.attachment);
+  }
+
   factory TicketModel.fromDocument(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
     return TicketModel(
