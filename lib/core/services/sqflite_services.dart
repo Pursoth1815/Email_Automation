@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
 class SqfliteServices {
@@ -16,8 +19,9 @@ class SqfliteServices {
   }
 
   Future<Database> _initDatabase() async {
-    final databasePath = await getDatabasesPath();
-    final path = join(databasePath, 'Thiran_database.db');
+    final Directory documentsDirectory =
+        await getApplicationDocumentsDirectory();
+    final String path = join(documentsDirectory.path, 'Thiran_database.db');
 
     return await openDatabase(
       path,
@@ -37,6 +41,47 @@ class SqfliteServices {
         user_name TEXT
       )
     ''');
+    await db.execute('''
+      CREATE TABLE transaction_responce (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        transaction_id INTEGER,
+        transaction_description TEXT,
+        transaction_status TEXT,
+        transaction_time TEXT
+      )
+    ''');
+  }
+
+  Future<void> insertTransactionDetails(List<dynamic> transactions) async {
+    final db = await database;
+
+    await db.transaction((txn) async {
+      final count = Sqflite.firstIntValue(
+          await txn.rawQuery('SELECT COUNT(*) FROM transaction_responce'));
+      if (count == 0) {
+        for (var transaction in transactions) {
+          await txn.insert(
+            'transaction_responce',
+            {
+              'transaction_id': transaction['id'],
+              'transaction_description': transaction['action'],
+              'transaction_status': transaction['status'],
+              'transaction_time': transaction['dateTime'],
+            },
+            conflictAlgorithm: ConflictAlgorithm.ignore,
+          );
+        }
+      }
+    });
+  }
+
+  Future<List<Map<String, dynamic>>> fetchErrorTransactions() async {
+    final db = await database;
+    return await db.query(
+      'transaction_responce',
+      where: 'transaction_status = ?',
+      whereArgs: ['Error'],
+    );
   }
 
   Future<bool> bulkInsert(List<Map<String, dynamic>> dataList) async {
