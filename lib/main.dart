@@ -40,7 +40,7 @@ class MainApp extends StatelessWidget {
     AppConstants.init(context);
 
     return const MaterialApp(
-      home: GithubList(),
+      home: RepositoryLists(),
     );
   }
 }

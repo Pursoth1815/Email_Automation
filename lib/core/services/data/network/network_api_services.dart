@@ -1,7 +1,5 @@
-import 'dart:developer';
-
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:thiran_tech/core/services/data/network/base_api_services.dart';
 
 class NetworkApiServices extends BaseApiServices {
@@ -10,7 +8,7 @@ class NetworkApiServices extends BaseApiServices {
 
   @override
   Future<dynamic> getApi() async {
-    dynamic responseJson;
+    List<Map<String, dynamic>> responseJson;
 
     final DateTime now = DateTime.now();
     final DateTime lastDate = now.subtract(Duration(days: 30));
@@ -26,11 +24,7 @@ class NetworkApiServices extends BaseApiServices {
       final response = await dio.get(baseUrl, queryParameters: params);
 
       if (response.statusCode == 200) {
-        if (kDebugMode) {
-          log(response.statusCode.toString());
-          log("${response.data}");
-        }
-        responseJson = response.data;
+        responseJson = List<Map<String, dynamic>>.from(response.data["items"]);
       } else {
         throw Exception(
             "Error occurred while communicating with API: ${response.statusCode}");
@@ -42,3 +36,7 @@ class NetworkApiServices extends BaseApiServices {
     return responseJson;
   }
 }
+
+final networkServiceProvider = Provider<NetworkApiServices>((ref) {
+  return NetworkApiServices();
+});

@@ -4,9 +4,29 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class Utils {
+  String formatNumber(String num) {
+    int number = int.parse(num);
+    if (number >= 100000) {
+      // For lakhs
+      double value = number / 100000;
+      return value == value.toInt()
+          ? '${value.toInt()}l'
+          : '${value.toStringAsFixed(1).replaceAll('.0', '')}l';
+    } else if (number >= 1000) {
+      // For thousands
+      double value = number / 1000;
+      return value == value.toInt()
+          ? '${value.toInt()}k'
+          : '${value.toStringAsFixed(1).replaceAll('.0', '')}k';
+    } else {
+      return number.toString();
+    }
+  }
+
   Future<File?> pickImage() async {
     final picker = ImagePicker();
-    final XFile? pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    final XFile? pickedFile =
+        await picker.pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
       return File(pickedFile.path);

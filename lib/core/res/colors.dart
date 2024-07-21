@@ -7,6 +7,8 @@ class AppColors {
 
   static const Color whiteLite = Color(0xffEFEEF5);
 
+  static const Color blackLite = Color(0xff121212);
+
   static const Color colorPrimary = Color(0xff3584FF);
 
   static const Color colorPrimarySecondary = Color(0xff1C75FF);
@@ -20,4 +22,8 @@ class AppColors {
   static const Color green = Color(0xFF50C878);
 
   static const Color light_black = Colors.black38;
+
+  static const Color Pink = Color(0xffFFB6C1);
+
+  static const Color DarkPink = Color(0xffE75468);
 }

@@ -17,7 +17,7 @@ class SqfliteServices {
 
   Future<Database> _initDatabase() async {
     final databasePath = await getDatabasesPath();
-    final path = join(databasePath, 'app_database.db');
+    final path = join(databasePath, 'Thiran_database.db');
 
     return await openDatabase(
       path,
@@ -39,14 +39,30 @@ class SqfliteServices {
     ''');
   }
 
-  Future<int> insert(Map<String, dynamic> row) async {
+  Future<bool> bulkInsert(List<Map<String, dynamic>> dataList) async {
     final db = await database;
-    return await db.insert('github_repositories', row);
+
+    try {
+      final batch = db.batch();
+      batch.delete('github_repositories');
+      for (var data in dataList) {
+        batch.insert('github_repositories', data);
+      }
+      await batch.commit(noResult: true);
+      return true;
+    } catch (e) {
+      print('Error during bulk insert: $e');
+      return false;
+    }
   }
 
-  Future<List<Map<String, dynamic>>> queryAll() async {
+  Future<List<Map<String, dynamic>>> fetchOfflineLimitData(
+      int pageCount) async {
     final db = await database;
-    return await db.query('github_repositories');
+
+    final offset = (pageCount - 1) * 15;
+
+    return await db.query('github_repositories', limit: 15, offset: offset);
   }
 }
 
