@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
 class Utils {
   String formatNumber(String num) {
@@ -21,6 +22,13 @@ class Utils {
     } else {
       return number.toString();
     }
+  }
+
+  String getCurrentDate() {
+    DateTime now = DateTime.now();
+    DateFormat formater = DateFormat('dd-MM-yyyy');
+
+    return formater.format(now);
   }
 
   Future<File?> pickImage() async {

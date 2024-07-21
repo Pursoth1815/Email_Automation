@@ -132,13 +132,17 @@ class RepositoryListsState extends ConsumerState<RepositoryLists> {
           autocorrect: true,
           autofocus: false,
           onSubmitted: (value) {
+            ref.read(searchText.notifier).state = value;
             ref.read(repositoryNotifierProvider.notifier).filterList(value);
           },
           onChanged: (value) {
+            ref.read(searchText.notifier).state = value;
             ref.read(repositoryNotifierProvider.notifier).filterList(value);
           },
           onTapOutside: (event) {
-            ref.read(repositoryNotifierProvider.notifier).clearFiler();
+            ref
+                .read(repositoryNotifierProvider.notifier)
+                .clearFiler(ref.read(searchText.notifier).state);
             SystemChannels.textInput.invokeMethod('TextInput.hide');
             FocusScope.of(context).unfocus();
           },

@@ -5,6 +5,8 @@ class AppStrings {
 
   static final String add_ticket = "Add Ticket";
 
+  static final String ticket_list = "Ticket List";
+
   static final String save = "Submit";
 
   static final String upload_doc = "Upload Attachment";
@@ -23,9 +25,12 @@ class AppStrings {
 
   static const String location = "location";
 
+  static const String reported_date = "Reported Date";
+
   static const String search_repo = "Search Repository";
 
   static const String view_ticket = "View Ticket";
+  static const String view_image = "View Image";
 
   static const String ticketInsertMsg = "Ticket Inserted Successfully...";
 }

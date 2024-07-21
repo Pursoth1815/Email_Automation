@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:thiran_tech/core/services/data/network/network_api_services.dart';
@@ -72,8 +74,9 @@ class RepositoryNotifier extends StateNotifier<RepositoryState> {
     }
   }
 
-  void clearFiler() {
-    if (state.filteredRepo!.length < 1) {
+  void clearFiler(String value) {
+    if ((state.filteredRepo == null || value.isEmpty) &&
+        state.filteredRepo!.length < 1) {
       state = state.copyWith(isFilterON: false, filteredRepo: []);
     }
   }
@@ -126,6 +129,7 @@ class RepositoryNotifier extends StateNotifier<RepositoryState> {
     if (!state.isLoading && !state.isPageLoading)
       state = state.copyWith(isLoading: true);
     try {
+      log("${state.pageCount}");
       List<Map<String, dynamic>> repos =
           await _dbHelper.fetchOfflineLimitData(state.pageCount);
       List<GithubListModel> dataList = repos
@@ -133,6 +137,8 @@ class RepositoryNotifier extends StateNotifier<RepositoryState> {
             (e) => GithubListModel.fromMap(e),
           )
           .toList();
+      log("${dataList.length}");
+      log("${state.repositories}");
       state = state.copyWith(
           repositories: [...state.repositories, ...dataList],
           isLoading: false,
@@ -145,6 +151,8 @@ class RepositoryNotifier extends StateNotifier<RepositoryState> {
     }
   }
 }
+
+final searchText = StateProvider<String>((ref) => '');
 
 final repositoryNotifierProvider =
     StateNotifierProvider<RepositoryNotifier, RepositoryState>((ref) {

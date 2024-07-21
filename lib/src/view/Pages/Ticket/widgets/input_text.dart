@@ -36,8 +36,6 @@ class CustomInputText extends StatelessWidget {
           ),
           hintText: hintText,
           hintStyle: TextStyle(color: Colors.black38, fontSize: 18),
-          labelText: hintText,
-          labelStyle: TextStyle(color: Colors.black38, fontSize: 18),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(15)),
             borderSide: BorderSide.none,
