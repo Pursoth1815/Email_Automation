@@ -94,8 +94,7 @@ class TicketStateNotifier extends StateNotifier<List<TicketModel>> {
   }
 }
 
-final ticketProvider =
-    StateNotifierProvider<TicketStateNotifier, List<TicketModel>>((ref) {
+final ticketProvider = StateNotifierProvider<TicketStateNotifier, List<TicketModel>>((ref) {
   final databaseServices = ref.read(databaseServicesProvider);
   return TicketStateNotifier(databaseServices, ref);
 });

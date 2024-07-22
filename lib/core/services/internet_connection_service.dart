@@ -1,37 +1,27 @@
-// import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 
-// Define a ChangeNotifier class for managing connectivity status
-class NetworkNotifier extends ChangeNotifier {
-  // final Connectivity _connectivity = Connectivity();
-  bool _isConnected = true;
-
-  NetworkNotifier() {
-    // _connectivity.onConnectivityChanged.listen((List<ConnectivityResult> results) {
-    //   if (results.isNotEmpty) {
-    //     _updateConnectionStatus(results.first);
-    //   }
-    // });
+// Define a StateNotifier class for managing connectivity status
+class NetworkNotifier extends StateNotifier<bool> {
+  NetworkNotifier() : super(true) {
+    _checkInitialConnection();
+    InternetConnectionChecker().onStatusChange.listen((status) {
+      _updateConnectionStatus(status == InternetConnectionStatus.connected);
+    });
   }
 
-  bool get isConnected => _isConnected;
+  void _checkInitialConnection() async {
+    final initialStatus = await InternetConnectionChecker().hasConnection;
+    _updateConnectionStatus(initialStatus);
+  }
 
-  /* void _updateConnectionStatus(ConnectivityResult connectivityResult) {
-    final wasConnected = _isConnected;
-    if (connectivityResult == ConnectivityResult.none) {
-      _isConnected = false;
-    } else {
-      _isConnected = true;
+  void _updateConnectionStatus(bool isConnected) {
+    if (state != isConnected) {
+      state = isConnected;
     }
-
-    if (wasConnected != _isConnected) {
-      notifyListeners();
-    }
-  } */
+  }
 }
 
-// Create a ChangeNotifierProvider for NetworkNotifier
-final networkNotifierProvider = ChangeNotifierProvider<NetworkNotifier>((ref) {
+final networkNotifierProvider = StateNotifierProvider<NetworkNotifier, bool>((ref) {
   return NetworkNotifier();
 });

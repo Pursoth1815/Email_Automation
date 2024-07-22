@@ -4,12 +4,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:thiran_tech/core/res/colors.dart';
 import 'package:thiran_tech/core/res/constant.dart';
 import 'package:thiran_tech/core/res/strings.dart';
+import 'package:thiran_tech/core/services/internet_connection_service.dart';
 import 'package:thiran_tech/core/utils.dart';
 import 'package:thiran_tech/src/controllers/Github_Controllers/github_list_controller.dart';
 import 'package:thiran_tech/src/controllers/Github_Controllers/scroll_controller.dart';
 import 'package:thiran_tech/src/models/github_list_model.dart';
 import 'package:thiran_tech/src/view/Pages/GitHub_Repo/widgets/repo_tile_widget.dart';
 import 'package:thiran_tech/src/view/Pages/Ticket/ticket_list.dart';
+import 'package:thiran_tech/src/view/components/error_connection.dart';
 import 'package:thiran_tech/src/view/components/shimmer.dart';
 import 'package:thiran_tech/src/view/components/shimmer_card.dart';
 
@@ -32,6 +34,7 @@ class RepositoryListsState extends ConsumerState<RepositoryLists> {
   @override
   Widget build(BuildContext context) {
     final repositoryState = ref.watch(repositoryNotifierProvider);
+    final connectionStatus = ref.watch(networkNotifierProvider);
     final scrollState = ref.read(scrollStateProvider.notifier);
 
     return Scaffold(
@@ -87,7 +90,7 @@ class RepositoryListsState extends ConsumerState<RepositoryLists> {
                   ),
                   _searchContent(context, repositoryState.repositories),
                   SizedBox(height: 30),
-                  _UserList(repositoryState, scrollState),
+                  _UserList(repositoryState, scrollState, connectionStatus),
                 ],
               ),
             ),
@@ -163,33 +166,35 @@ class RepositoryListsState extends ConsumerState<RepositoryLists> {
     );
   }
 
-  Widget _UserList(RepositoryState state, ScrollStateNotifier scrollState) {
+  Widget _UserList(RepositoryState state, ScrollStateNotifier scrollState, bool connectionStatus) {
     return state.isLoading && state.isLoading && state.repositories.isEmpty
         ? ShimmerCard()
-        : Expanded(
-            child: Column(
-              children: [
-                Expanded(
-                  child: ListView.builder(
-                    controller: scrollState.scrollController,
-                    shrinkWrap: false,
-                    itemCount: state.isFilterON ? state.filteredRepo!.length : state.repositories.length,
-                    itemBuilder: (context, index) {
-                      GithubListModel item = state.isFilterON ? state.filteredRepo![index] : state.repositories[index];
-                      return Padding(
-                        padding: EdgeInsets.symmetric(vertical: 10),
-                        child: RepoTileWidget(repoList: item),
-                      );
-                    },
-                  ),
+        : connectionStatus
+            ? Expanded(
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: ListView.builder(
+                        controller: scrollState.scrollController,
+                        shrinkWrap: false,
+                        itemCount: state.isFilterON ? state.filteredRepo!.length : state.repositories.length,
+                        itemBuilder: (context, index) {
+                          GithubListModel item = state.isFilterON ? state.filteredRepo![index] : state.repositories[index];
+                          return Padding(
+                            padding: EdgeInsets.symmetric(vertical: 10),
+                            child: RepoTileWidget(repoList: item),
+                          );
+                        },
+                      ),
+                    ),
+                    if (state.isPageLoading)
+                      Container(
+                        margin: EdgeInsets.only(top: 20),
+                        child: CircularProgressIndicator(),
+                      ),
+                  ],
                 ),
-                if (state.isPageLoading)
-                  Container(
-                    margin: EdgeInsets.only(top: 20),
-                    child: CircularProgressIndicator(),
-                  ),
-              ],
-            ),
-          );
+              )
+            : ErrorConnection(height: AppConstants.screenHeight * 0.4, state: ErrorConnectionState.noInternet, msg: "Please turn on the Internet !");
   }
 }

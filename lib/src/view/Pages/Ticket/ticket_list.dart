@@ -1,15 +1,16 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:thiran_tech/core/res/colors.dart';
 import 'package:thiran_tech/core/res/constant.dart';
-import 'package:thiran_tech/core/res/image_path.dart';
 import 'package:thiran_tech/core/res/strings.dart';
 import 'package:thiran_tech/core/services/internet_connection_service.dart';
 import 'package:thiran_tech/core/utils.dart';
 import 'package:thiran_tech/src/controllers/Ticket_Controllers/ticket_list_provider.dart';
-import 'package:thiran_tech/src/models/ticket_model.dart';
 import 'package:thiran_tech/src/view/Pages/Ticket/add_ticket.dart';
 import 'package:thiran_tech/src/view/Pages/Ticket/widgets/ticket_tile_widget.dart';
+import 'package:thiran_tech/src/view/components/error_connection.dart';
 
 class TicketList extends ConsumerWidget {
   const TicketList({super.key});
@@ -18,7 +19,7 @@ class TicketList extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final ticketList = ref.watch(ticketProvider);
     final connectionStatus = ref.watch(networkNotifierProvider);
-
+    log("$connectionStatus");
     return Scaffold(
       backgroundColor: AppColors.light_black,
       appBar: _homeAppbar(context),
@@ -60,9 +61,9 @@ class TicketList extends ConsumerWidget {
                     ),
                   ),
                 ),
-                ticketList.isEmpty
+                ticketList.isEmpty && connectionStatus
                     ? const Center(child: Text("Add list"))
-                    : connectionStatus.isConnected
+                    : connectionStatus
                         ? Expanded(
                             child: ListView.separated(
                               separatorBuilder: (context, index) => const SizedBox(height: 15),
@@ -73,7 +74,8 @@ class TicketList extends ConsumerWidget {
                               },
                             ),
                           )
-                        : const Center(child: Text("No internet")),
+                        : ErrorConnection(
+                            height: AppConstants.screenHeight * 0.7, state: ErrorConnectionState.noInternet, msg: "Please turn on the Internet !"),
               ],
             )),
       ),
