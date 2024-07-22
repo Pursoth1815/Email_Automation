@@ -44,7 +44,7 @@ class RepoTileWidget extends StatelessWidget {
                         Text(
                           repoList.repo_name,
                           style: TextStyle(
-                            fontSize: 20,
+                            fontSize: 12,
                             decoration: TextDecoration.none,
                             fontWeight: FontWeight.w500,
                             color: AppColors.textColor,
@@ -55,7 +55,7 @@ class RepoTileWidget extends StatelessWidget {
                             Icon(
                               Icons.star,
                               color: Colors.yellow,
-                              size: 20,
+                              size: 12,
                             ),
                             SizedBox(width: 5),
                             Text(
@@ -64,7 +64,7 @@ class RepoTileWidget extends StatelessWidget {
                                 decoration: TextDecoration.none,
                                 fontWeight: FontWeight.w500,
                                 color: AppColors.blackLite,
-                                fontSize: 16,
+                                fontSize: 11,
                               ),
                             ),
                             SizedBox(width: 8),
@@ -76,7 +76,7 @@ class RepoTileWidget extends StatelessWidget {
                       repoList.user_name,
                       style: TextStyle(
                         decoration: TextDecoration.none,
-                        fontSize: 15,
+                        fontSize: 11,
                         color: Colors.teal,
                         fontWeight: FontWeight.w500,
                       ),
@@ -86,7 +86,7 @@ class RepoTileWidget extends StatelessWidget {
                       maxLines: 3,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        fontSize: 11,
+                        fontSize: 10,
                         color: Colors.black38,
                       ),
                     ),
