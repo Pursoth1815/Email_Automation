@@ -169,7 +169,7 @@ class RepositoryListsState extends ConsumerState<RepositoryLists> {
   Widget _UserList(RepositoryState state, ScrollStateNotifier scrollState, bool connectionStatus) {
     return state.isLoading && state.isLoading && state.repositories.isEmpty
         ? ShimmerCard()
-        : connectionStatus
+        : connectionStatus && state.repositories.isNotEmpty
             ? Expanded(
                 child: Column(
                   children: [
@@ -195,6 +195,11 @@ class RepositoryListsState extends ConsumerState<RepositoryLists> {
                   ],
                 ),
               )
-            : ErrorConnection(height: AppConstants.screenHeight * 0.4, state: ErrorConnectionState.noInternet, msg: "Please turn on the Internet !");
+            : ErrorConnection(
+                height: AppConstants.screenHeight * 0.6,
+                state: ErrorConnectionState.noInternet,
+                msg: "Please turn on the Internet !",
+                onClick: () => ref.read(repositoryNotifierProvider.notifier).fetchGithubRepositories(),
+              );
   }
 }

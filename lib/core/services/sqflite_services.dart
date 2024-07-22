@@ -19,8 +19,7 @@ class SqfliteServices {
   }
 
   Future<Database> _initDatabase() async {
-    final Directory documentsDirectory =
-        await getApplicationDocumentsDirectory();
+    final Directory documentsDirectory = await getApplicationDocumentsDirectory();
     final String path = join(documentsDirectory.path, 'Thiran_database.db');
 
     return await openDatabase(
@@ -47,7 +46,8 @@ class SqfliteServices {
         transaction_id INTEGER,
         transaction_description TEXT,
         transaction_status TEXT,
-        transaction_time TEXT
+        transaction_time TEXT,
+        mail_sent_flag TEXT
       )
     ''');
   }
@@ -56,8 +56,7 @@ class SqfliteServices {
     final db = await database;
 
     await db.transaction((txn) async {
-      final count = Sqflite.firstIntValue(
-          await txn.rawQuery('SELECT COUNT(*) FROM transaction_responce'));
+      final count = Sqflite.firstIntValue(await txn.rawQuery('SELECT COUNT(*) FROM transaction_responce'));
       if (count == 0) {
         for (var transaction in transactions) {
           await txn.insert(
@@ -67,6 +66,7 @@ class SqfliteServices {
               'transaction_description': transaction['action'],
               'transaction_status': transaction['status'],
               'transaction_time': transaction['dateTime'],
+              'mail_sent_flag': 'N',
             },
             conflictAlgorithm: ConflictAlgorithm.ignore,
           );
@@ -79,9 +79,29 @@ class SqfliteServices {
     final db = await database;
     return await db.query(
       'transaction_responce',
-      where: 'transaction_status = ?',
-      whereArgs: ['Error'],
+      where: 'transaction_status = ? and mail_sent_flag = ?',
+      whereArgs: ['Error', 'N'],
     );
+  }
+
+  Future<void> updateErrorTransactions(List<Map<String, dynamic>> errorTransactions) async {
+    final db = await database;
+
+    await db.transaction((txn) async {
+      for (var transaction in errorTransactions) {
+        String id = transaction['id'].toString();
+
+        await txn.update(
+          'transaction_responce',
+          {
+            'mail_sent_flag': 'Y',
+          },
+          where: 'transaction_id = ?',
+          whereArgs: [id],
+        );
+      }
+    });
+    print("************ Updated *******************");
   }
 
   Future<bool> bulkInsert(List<Map<String, dynamic>> dataList) async {
@@ -101,8 +121,7 @@ class SqfliteServices {
     }
   }
 
-  Future<List<Map<String, dynamic>>> fetchOfflineLimitData(
-      int pageCount) async {
+  Future<List<Map<String, dynamic>>> fetchOfflineLimitData(int pageCount) async {
     final db = await database;
 
     final offset = (pageCount - 1) * 15;

@@ -76,21 +76,19 @@ class _MyAppState extends State<MyApp> {
     await databaseHelper.insertTransactionDetails(transactionsJson);
 
     final errorTransactions = await databaseHelper.fetchErrorTransactions();
-
-    Isolate.spawn(
-        insertTransactions, [errorTransactions, sendPort, emailService],
-        onExit: sendPort);
+    print("CHEekckkk ${errorTransactions.length}");
+    Isolate.spawn(insertTransactions, [errorTransactions, sendPort, emailService], onExit: sendPort);
     log("spawn complete >>>>>>>>>>");
 
     receivePort.listen((data) {
       print("%%%%%%%%%%%%%%%% $data");
       receivePort.close();
     });
+    if (errorTransactions.isNotEmpty) await databaseHelper.updateErrorTransactions(errorTransactions);
   }
 
   static Future<List<Map<String, dynamic>>> _loadJsonFile() async {
-    final jsonString = await rootBundle
-        .loadString('lib/core/services/data/mail_json_data.json');
+    final jsonString = await rootBundle.loadString('lib/core/services/data/mail_json_data.json');
     final List<dynamic> jsonList = jsonDecode(jsonString);
     return jsonList.map((e) => e as Map<String, dynamic>).toList();
   }

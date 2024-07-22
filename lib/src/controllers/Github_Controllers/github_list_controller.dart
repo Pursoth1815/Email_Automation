@@ -90,8 +90,6 @@ class RepositoryNotifier extends StateNotifier<RepositoryState> {
   }
 
   Future<void> fetchGithubRepositories() async {
-    if (state.isLoading) return;
-
     state = state.copyWith(isLoading: true);
     try {
       List<Map<String, dynamic>> repositories = await NetworkApiServices().get();
@@ -128,8 +126,11 @@ class RepositoryNotifier extends StateNotifier<RepositoryState> {
           .toList();
       log("${dataList.length}");
       log("${state.repositories}");
-      state =
-          state.copyWith(repositories: [...state.repositories, ...dataList], isLoading: false, maxCountReached: state.totalCount == [...state.repositories, ...dataList].length, isPageLoading: false);
+      state = state.copyWith(
+          repositories: [...state.repositories, ...dataList],
+          isLoading: false,
+          maxCountReached: state.totalCount == [...state.repositories, ...dataList].length,
+          isPageLoading: false);
     } catch (e) {
       state = state.copyWith(isLoading: false, errorMessage: e.toString(), isPageLoading: false);
     }

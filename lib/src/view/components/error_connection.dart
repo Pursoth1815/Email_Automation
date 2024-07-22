@@ -31,7 +31,6 @@ class _ErrorConnectionState extends ConsumerState<ErrorConnection> {
     return Container(
       width: widget.width ?? AppConstants.screenWidth,
       height: widget.height ?? (AppConstants.screenHeight - AppConstants.appBarHeight),
-      padding: EdgeInsets.only(bottom: AppConstants.appBarHeight),
       decoration: BoxDecoration(
         color: AppColors.whiteLite,
         borderRadius: BorderRadius.vertical(
@@ -39,7 +38,7 @@ class _ErrorConnectionState extends ConsumerState<ErrorConnection> {
         ),
       ),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Image.asset(
             img_path,
@@ -72,7 +71,7 @@ class _ErrorConnectionState extends ConsumerState<ErrorConnection> {
                     () {
                       print("object");
                       if (repositoryState) {
-                        widget.onClick;
+                        widget.onClick!();
                       } else {
                         showCustomSnackBar(context, "Please turn on Internet Connection");
                       }

@@ -8,7 +8,7 @@ final emailProvider = Provider((ref) {
 });
 
 class EmailService {
-  Future<void> sendEmail(String accessToken, String recipient, String subject, String body, {String? htmlBody}) async {
+  Future<bool> sendEmail(String accessToken, String recipient, String subject, String body, {String? htmlBody}) async {
     final smtpServer = gmailSaslXoauth2('ruvser03@gmail.com', accessToken);
 
     final message = Message()
@@ -24,8 +24,10 @@ class EmailService {
     try {
       final sendReport = await send(message, smtpServer);
       print('Message sent: ' + sendReport.toString());
+      return true;
     } on MailerException catch (e) {
       print('Message not sent. \n' + e.toString());
+      return false;
     }
   }
 
@@ -52,11 +54,11 @@ class EmailService {
     return buffer.toString();
   }
 
-  Future<void> sendErrorEmail(List<Map<String, dynamic>> errorTransactions) async {
+  Future<bool> sendErrorEmail(List<Map<String, dynamic>> errorTransactions) async {
     const clientId = '';
-    const clientSecret = '';
-    const refreshToken = '';
-    const recipient = 'pursothpersonal@gmail.com';
+    const clientSecret = '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';
+    const refreshToken = '1//04m0GcOFcefVRCgYIARAAGAQSNwF-L9IrDX-f0XG0FJkir3xUMbQZSTSJN9LnAXWCMaMx9MEmacO821UKK4F0xDraWuFVACD7oHA';
+    const recipient = 'gokulhariharan005@gmail.com';
     const subject = 'Failed Transaction Details';
     const body = 'This is a test email.';
 
@@ -71,10 +73,17 @@ class EmailService {
       final accessToken = await NetworkApiServices().post(data);
 
       final htmlBody = createHtmlTable(errorTransactions);
-      await sendEmail(accessToken, recipient, subject, body, htmlBody: htmlBody);
-      print('Email sent successfully');
+      bool flag = await sendEmail(accessToken, recipient, subject, body, htmlBody: htmlBody);
+      if (flag) {
+        print('Email sent successfully');
+        return true;
+      } else {
+        print('Email not  sent');
+      }
     } catch (e) {
       print('Error: $e');
+      return false;
     }
+    return false;
   }
 }
