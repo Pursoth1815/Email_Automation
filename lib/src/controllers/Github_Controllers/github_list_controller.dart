@@ -57,16 +57,13 @@ class RepositoryState {
 class RepositoryNotifier extends StateNotifier<RepositoryState> {
   final SqfliteServices _dbHelper;
 
-  RepositoryNotifier(this._dbHelper)
-      : super(
-            RepositoryState(pageCount: 1, repositories: [], isLoading: false));
+  RepositoryNotifier(this._dbHelper) : super(RepositoryState(pageCount: 1, repositories: [], isLoading: false));
 
   void incrementPageCount() {
     print(state.isFilterON);
     print(state.maxCountReached);
     if (!state.maxCountReached && !state.isFilterON) {
-      state =
-          state.copyWith(pageCount: state.pageCount + 1, isPageLoading: true);
+      state = state.copyWith(pageCount: state.pageCount + 1, isPageLoading: true);
       Future.delayed(
         Durations.extralong4,
         () => refreshRepositories(),
@@ -75,8 +72,7 @@ class RepositoryNotifier extends StateNotifier<RepositoryState> {
   }
 
   void clearFiler(String value) {
-    if ((state.filteredRepo == null || value.isEmpty) &&
-        state.filteredRepo!.length < 1) {
+    if ((state.filteredRepo == null || value.isEmpty) && state.filteredRepo!.length < 1) {
       state = state.copyWith(isFilterON: false, filteredRepo: []);
     }
   }
@@ -87,8 +83,7 @@ class RepositoryNotifier extends StateNotifier<RepositoryState> {
 
     if (value.isNotEmpty) {
       _filterList = state.repositories.where((element) {
-        return element.repo_name.toLowerCase().contains(value.toLowerCase()) ||
-            element.user_name.toLowerCase().contains(value.toLowerCase());
+        return element.repo_name.toLowerCase().contains(value.toLowerCase()) || element.user_name.toLowerCase().contains(value.toLowerCase());
       }).toList();
     }
     state = state.copyWith(filteredRepo: _filterList);
@@ -99,12 +94,9 @@ class RepositoryNotifier extends StateNotifier<RepositoryState> {
 
     state = state.copyWith(isLoading: true);
     try {
-      List<Map<String, dynamic>> repositories =
-          await NetworkApiServices().getApi();
+      List<Map<String, dynamic>> repositories = await NetworkApiServices().get();
 
-      state = state.copyWith(
-          totalCount: repositories.length,
-          maxCountReached: repositories.length == state.repositories.length);
+      state = state.copyWith(totalCount: repositories.length, maxCountReached: repositories.length == state.repositories.length);
 
       List<Map<String, dynamic>> dataList = repositories.map(
         (element) {
@@ -120,18 +112,15 @@ class RepositoryNotifier extends StateNotifier<RepositoryState> {
         await refreshRepositories();
       }
     } catch (e) {
-      state = state.copyWith(
-          isLoading: false, errorMessage: e.toString(), isPageLoading: false);
+      state = state.copyWith(isLoading: false, errorMessage: e.toString(), isPageLoading: false);
     }
   }
 
   Future<void> refreshRepositories() async {
-    if (!state.isLoading && !state.isPageLoading)
-      state = state.copyWith(isLoading: true);
+    if (!state.isLoading && !state.isPageLoading) state = state.copyWith(isLoading: true);
     try {
       log("${state.pageCount}");
-      List<Map<String, dynamic>> repos =
-          await _dbHelper.fetchOfflineLimitData(state.pageCount);
+      List<Map<String, dynamic>> repos = await _dbHelper.fetchOfflineLimitData(state.pageCount);
       List<GithubListModel> dataList = repos
           .map(
             (e) => GithubListModel.fromMap(e),
@@ -139,23 +128,17 @@ class RepositoryNotifier extends StateNotifier<RepositoryState> {
           .toList();
       log("${dataList.length}");
       log("${state.repositories}");
-      state = state.copyWith(
-          repositories: [...state.repositories, ...dataList],
-          isLoading: false,
-          maxCountReached:
-              state.totalCount == [...state.repositories, ...dataList].length,
-          isPageLoading: false);
+      state =
+          state.copyWith(repositories: [...state.repositories, ...dataList], isLoading: false, maxCountReached: state.totalCount == [...state.repositories, ...dataList].length, isPageLoading: false);
     } catch (e) {
-      state = state.copyWith(
-          isLoading: false, errorMessage: e.toString(), isPageLoading: false);
+      state = state.copyWith(isLoading: false, errorMessage: e.toString(), isPageLoading: false);
     }
   }
 }
 
 final searchText = StateProvider<String>((ref) => '');
 
-final repositoryNotifierProvider =
-    StateNotifierProvider<RepositoryNotifier, RepositoryState>((ref) {
+final repositoryNotifierProvider = StateNotifierProvider<RepositoryNotifier, RepositoryState>((ref) {
   final databaseHelper = ref.watch(databaseProvider);
   return RepositoryNotifier(databaseHelper);
 });

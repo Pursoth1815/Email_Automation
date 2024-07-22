@@ -6,11 +6,7 @@ class CustomInputText extends StatelessWidget {
   final TextEditingController controller;
   final String hintText;
   final bool mutiline;
-  const CustomInputText(
-      {super.key,
-      required this.controller,
-      required this.hintText,
-      this.mutiline = false});
+  const CustomInputText({super.key, required this.controller, required this.hintText, this.mutiline = false});
 
   @override
   Widget build(BuildContext context) {
@@ -26,16 +22,17 @@ class CustomInputText extends StatelessWidget {
           SystemChannels.textInput.invokeMethod('TextInput.hide');
           FocusScope.of(context).unfocus();
         },
+        style: TextStyle(color: AppColors.blackLite, fontSize: 12),
         minLines: 1,
         maxLines: null,
         keyboardType: mutiline ? TextInputType.multiline : TextInputType.text,
         decoration: InputDecoration(
           contentPadding: EdgeInsets.symmetric(
-            vertical: 25.0,
-            horizontal: 15.0,
+            vertical: 10.0,
+            horizontal: 10.0,
           ),
           hintText: hintText,
-          hintStyle: TextStyle(color: Colors.black38, fontSize: 18),
+          hintStyle: TextStyle(color: Colors.black38, fontSize: 12),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(15)),
             borderSide: BorderSide.none,

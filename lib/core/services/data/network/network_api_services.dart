@@ -5,9 +5,31 @@ import 'package:thiran_tech/core/services/data/network/base_api_services.dart';
 class NetworkApiServices extends BaseApiServices {
   final dio = Dio();
   final baseUrl = 'https://api.github.com/search/repositories';
+  final getTokenUrl = 'https://oauth2.googleapis.com/token';
 
   @override
-  Future<dynamic> getApi() async {
+  Future<dynamic> post(Map requestData) async {
+    try {
+      final response = await dio.post(getTokenUrl,
+          options: Options(
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+          ),
+          data: requestData);
+
+      if (response.statusCode == 200) {
+        return response.data['access_token'];
+      } else {
+        throw Exception('Failed to obtain access token: ${response.statusMessage}');
+      }
+    } catch (e) {
+      print('Error response data: ${(e as DioException).response?.data}');
+      print('Error response headers: ${(e).response?.headers}');
+      throw Exception('Error obtaining access token: $e');
+    }
+  }
+
+  @override
+  Future<dynamic> get() async {
     List<Map<String, dynamic>> responseJson;
 
     final DateTime now = DateTime.now();
@@ -26,8 +48,7 @@ class NetworkApiServices extends BaseApiServices {
       if (response.statusCode == 200) {
         responseJson = List<Map<String, dynamic>>.from(response.data["items"]);
       } else {
-        throw Exception(
-            "Error occurred while communicating with API: ${response.statusCode}");
+        throw Exception("Error occurred while communicating with API: ${response.statusCode}");
       }
     } catch (e) {
       throw Exception(e);

@@ -1,42 +1,13 @@
-import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server/gmail.dart';
+import 'package:thiran_tech/core/services/data/network/network_api_services.dart';
 
 final emailProvider = Provider((ref) {
   return EmailService();
 });
 
 class EmailService {
-  Future<String> getAccessToken(String clientId, String clientSecret, String refreshToken) async {
-    final dio = Dio();
-
-    try {
-      final response = await dio.post(
-        'https://oauth2.googleapis.com/token',
-        options: Options(
-          headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        ),
-        data: {
-          'client_id': clientId,
-          'client_secret': clientSecret,
-          'refresh_token': refreshToken,
-          'grant_type': 'refresh_token',
-        },
-      );
-
-      if (response.statusCode == 200) {
-        return response.data['access_token'];
-      } else {
-        throw Exception('Failed to obtain access token: ${response.statusMessage}');
-      }
-    } catch (e) {
-      print('Error response data: ${(e as DioException).response?.data}');
-      print('Error response headers: ${(e).response?.headers}');
-      throw Exception('Error obtaining access token: $e');
-    }
-  }
-
   Future<void> sendEmail(String accessToken, String recipient, String subject, String body, {String? htmlBody}) async {
     final smtpServer = gmailSaslXoauth2('ruvser03@gmail.com', accessToken);
 
@@ -90,7 +61,15 @@ class EmailService {
     const body = 'This is a test email.';
 
     try {
-      final accessToken = await getAccessToken(clientId, clientSecret, refreshToken);
+      var data = {
+        'client_id': clientId,
+        'client_secret': clientSecret,
+        'refresh_token': refreshToken,
+        'grant_type': 'refresh_token',
+      };
+
+      final accessToken = await NetworkApiServices().post(data);
+
       final htmlBody = createHtmlTable(errorTransactions);
       await sendEmail(accessToken, recipient, subject, body, htmlBody: htmlBody);
       print('Email sent successfully');

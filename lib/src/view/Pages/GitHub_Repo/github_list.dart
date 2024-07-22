@@ -65,22 +65,21 @@ class RepositoryListsState extends ConsumerState<RepositoryLists> {
                   Align(
                     alignment: Alignment.centerRight,
                     child: ElevatedButton(
-                      onPressed: () =>
-                          Utils().navigateTo(context, TicketList()),
+                      onPressed: () => Utils().navigateTo(context, TicketList()),
                       style: ButtonStyle(
                         shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15),
                           ),
                         ),
-                        backgroundColor:
-                            WidgetStatePropertyAll(AppColors.green),
+                        backgroundColor: WidgetStatePropertyAll(AppColors.green),
                       ),
                       child: Text(
                         AppStrings.view_ticket,
                         style: TextStyle(
                           color: AppColors.white,
                           letterSpacing: 2,
+                          fontSize: 11,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -107,10 +106,11 @@ class RepositoryListsState extends ConsumerState<RepositoryLists> {
         style: TextStyle(
           wordSpacing: 8,
           letterSpacing: 4,
-          fontSize: 20,
+          fontSize: 15,
           fontWeight: FontWeight.w500,
         ),
       ),
+      surfaceTintColor: AppColors.white,
       automaticallyImplyLeading: false,
     );
   }
@@ -122,7 +122,7 @@ class RepositoryListsState extends ConsumerState<RepositoryLists> {
         Text(
           AppStrings.search_repo,
           style: TextStyle(
-            fontSize: 20,
+            fontSize: 14,
             color: Colors.black,
             fontWeight: FontWeight.w500,
           ),
@@ -140,25 +140,23 @@ class RepositoryListsState extends ConsumerState<RepositoryLists> {
             ref.read(repositoryNotifierProvider.notifier).filterList(value);
           },
           onTapOutside: (event) {
-            ref
-                .read(repositoryNotifierProvider.notifier)
-                .clearFiler(ref.read(searchText.notifier).state);
+            ref.read(repositoryNotifierProvider.notifier).clearFiler(ref.read(searchText.notifier).state);
             SystemChannels.textInput.invokeMethod('TextInput.hide');
             FocusScope.of(context).unfocus();
           },
+          style: TextStyle(color: AppColors.blackLite, fontSize: 12),
           decoration: InputDecoration(
             prefixIcon: Icon(Icons.search),
             prefixIconColor: Colors.black38,
             hintText: AppStrings.search,
-            hintStyle: TextStyle(color: Colors.black38, fontSize: 15),
+            hintStyle: TextStyle(color: Colors.black38, fontSize: 13),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(20)),
               borderSide: BorderSide.none,
             ),
             fillColor: AppColors.white,
             filled: true,
-            contentPadding:
-                EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+            contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
           ),
         ),
       ],
@@ -175,13 +173,9 @@ class RepositoryListsState extends ConsumerState<RepositoryLists> {
                   child: ListView.builder(
                     controller: scrollState.scrollController,
                     shrinkWrap: false,
-                    itemCount: state.isFilterON
-                        ? state.filteredRepo!.length
-                        : state.repositories.length,
+                    itemCount: state.isFilterON ? state.filteredRepo!.length : state.repositories.length,
                     itemBuilder: (context, index) {
-                      GithubListModel item = state.isFilterON
-                          ? state.filteredRepo![index]
-                          : state.repositories[index];
+                      GithubListModel item = state.isFilterON ? state.filteredRepo![index] : state.repositories[index];
                       return Padding(
                         padding: EdgeInsets.symmetric(vertical: 10),
                         child: RepoTileWidget(repoList: item),

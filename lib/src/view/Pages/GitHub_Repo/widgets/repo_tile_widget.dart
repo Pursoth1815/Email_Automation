@@ -42,7 +42,9 @@ class RepoTileWidget extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          repoList.repo_name,
+                          Utils().getRepoName(
+                            repoList.repo_name,
+                          ),
                           style: TextStyle(
                             fontSize: 12,
                             decoration: TextDecoration.none,

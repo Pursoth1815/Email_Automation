@@ -33,4 +33,3 @@ flutter:
   assets:
     - assets/images/
     - lib/core/services/data/mail_json_data.json
-    - lib/core/api/mail_automation.json

@@ -7,7 +7,9 @@ import 'package:thiran_tech/core/res/strings.dart';
 import 'package:thiran_tech/core/services/internet_connection_service.dart';
 import 'package:thiran_tech/core/utils.dart';
 import 'package:thiran_tech/src/controllers/Ticket_Controllers/ticket_list_provider.dart';
+import 'package:thiran_tech/src/models/ticket_model.dart';
 import 'package:thiran_tech/src/view/Pages/Ticket/add_ticket.dart';
+import 'package:thiran_tech/src/view/Pages/Ticket/widgets/ticket_tile_widget.dart';
 
 class TicketList extends ConsumerWidget {
   const TicketList({super.key});
@@ -38,8 +40,7 @@ class TicketList extends ConsumerWidget {
                   margin: EdgeInsets.only(right: 15, bottom: 15, top: 15),
                   alignment: Alignment.centerRight,
                   child: ElevatedButton(
-                    onPressed: () =>
-                        Utils().navigateTo(context, AddTicketList()),
+                    onPressed: () => Utils().navigateTo(context, AddTicketList()),
                     style: ButtonStyle(
                       shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
@@ -53,6 +54,7 @@ class TicketList extends ConsumerWidget {
                       style: TextStyle(
                         color: AppColors.white,
                         letterSpacing: 2,
+                        fontSize: 11,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -63,98 +65,11 @@ class TicketList extends ConsumerWidget {
                     : connectionStatus.isConnected
                         ? Expanded(
                             child: ListView.separated(
-                              separatorBuilder: (context, index) =>
-                                  const SizedBox(height: 15),
+                              separatorBuilder: (context, index) => const SizedBox(height: 15),
                               itemCount: ticketList.length,
                               itemBuilder: (context, index) {
                                 final model = ticketList[index];
-                                return Container(
-                                  padding: EdgeInsets.all(10),
-                                  decoration: BoxDecoration(
-                                    color: AppColors.white,
-                                    borderRadius: BorderRadius.circular(13),
-                                  ),
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
-                                          children: [
-                                            Text(
-                                              model.title,
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 18,
-                                              ),
-                                            ),
-                                            Text(
-                                              model.description,
-                                              maxLines: 3,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: TextStyle(
-                                                fontSize: 14,
-                                                color: Colors.black38,
-                                              ),
-                                            ),
-                                            Container(
-                                              margin: EdgeInsets.only(top: 15),
-                                              child: Row(
-                                                children: [
-                                                  Icon(
-                                                    Icons.location_on,
-                                                    color: AppColors.DarkPink,
-                                                  ),
-                                                  SizedBox(
-                                                    width: 10,
-                                                  ),
-                                                  Expanded(
-                                                    child: Text(
-                                                      model.location,
-                                                      maxLines: 1,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      style: TextStyle(
-                                                        color: Colors.black38,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: 15,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Image.asset(
-                                            ImagePath.gallery,
-                                            width: 35,
-                                            height: 35,
-                                          ),
-                                          SizedBox(height: 5),
-                                          Text(
-                                            AppStrings.view_image,
-                                            style: TextStyle(
-                                              fontSize: 17,
-                                              fontWeight: FontWeight.w400,
-                                              color: AppColors.grey,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                );
+                                return Ticket_List_Tile(model: model);
                               },
                             ),
                           )
@@ -190,7 +105,7 @@ class TicketList extends ConsumerWidget {
             wordSpacing: 8,
             letterSpacing: 4,
             color: AppColors.whiteLite,
-            fontSize: 20,
+            fontSize: 15,
             fontWeight: FontWeight.w500,
           ),
         ),

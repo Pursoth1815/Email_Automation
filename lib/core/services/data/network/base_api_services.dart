@@ -1,3 +1,4 @@
 abstract class BaseApiServices {
-  Future<dynamic> getApi();
+  Future<dynamic> get();
+  Future<dynamic> post(Map requestData);
 }
