@@ -74,6 +74,7 @@ class _MyAppState extends State<MyApp> {
     ReceivePort receivePort = ReceivePort();
     final sendPort = receivePort.sendPort;
     final transactionsJson = await _loadJsonFile();
+    final emailCredentials = await _loadEmailCredentials();
 
     final databaseHelper = SqfliteServices();
 
@@ -81,7 +82,7 @@ class _MyAppState extends State<MyApp> {
 
     final errorTransactions = await databaseHelper.fetchErrorTransactions();
 
-    Isolate.spawn(insertTransactions, [errorTransactions, sendPort, emailService], onExit: sendPort);
+    Isolate.spawn(insertTransactions, [errorTransactions, emailCredentials, sendPort, emailService], onExit: sendPort);
 
     receivePort.listen((data) {
       receivePort.close();
@@ -95,13 +96,20 @@ class _MyAppState extends State<MyApp> {
     return jsonList.map((e) => e as Map<String, dynamic>).toList();
   }
 
+  static Future<Map<String, dynamic>> _loadEmailCredentials() async {
+    final jsonString = await rootBundle.loadString('lib/core/services/data/mail.json');
+    final Map<String, dynamic> jsonMap = jsonDecode(jsonString);
+    return jsonMap;
+  }
+
   static void insertTransactions(List<dynamic> params) async {
     final errorTransactions = params[0] as List<Map<String, dynamic>>;
-    final sendPort = params[1] as SendPort;
-    final emailService = params[2] as EmailService;
+    final emailCred = params[1] as Map<String, dynamic>;
+    final sendPort = params[2] as SendPort;
+    final emailService = params[3] as EmailService;
 
     if (errorTransactions.isNotEmpty) {
-      emailService.sendErrorEmail(errorTransactions);
+      emailService.sendErrorEmail(errorTransactions, emailCred);
     } else {
       print('No error transactions found.');
     }

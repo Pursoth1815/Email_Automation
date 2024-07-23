@@ -1,0 +1,12 @@
+{
+    "client_id": "",
+    "client_secret": "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",
+    "refresh_token": "1//04CG3orYwSDhMCgYIARAAGAQSNwF-L9IrgtAXsxs3ym2iAjbBvI9YNtq6SGOZ5RftcAXQA0qYIHai3DXL-xzauGAHoHpHq5K5Hf8",
+    "project_id": "gamil-auth-430205",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "redirect_uris": [
+        "https://developers.google.com/oauthplayground"
+    ]
+}

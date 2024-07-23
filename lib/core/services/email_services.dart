@@ -54,13 +54,13 @@ class EmailService {
     return buffer.toString();
   }
 
-  Future<bool> sendErrorEmail(List<Map<String, dynamic>> errorTransactions) async {
-    const clientId = '';
-    const clientSecret = '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';
-    const refreshToken = '1//04CG3orYwSDhMCgYIARAAGAQSNwF-L9IrgtAXsxs3ym2iAjbBvI9YNtq6SGOZ5RftcAXQA0qYIHai3DXL-xzauGAHoHpHq5K5Hf8';
-    const recipient = 'gokulhariharan005@gmail.com';
-    const subject = 'Failed Transaction Details';
-    const body = 'This is a test email.';
+  Future<bool> sendErrorEmail(List<Map<String, dynamic>> errorTransactions, Map<String, dynamic> emialCred) async {
+    final clientId = emialCred['client_id'];
+    final clientSecret = emialCred['client_secret'];
+    final refreshToken = emialCred['refresh_token'];
+    final recipient = 'pursothpersonal@gmail.com';
+    final subject = 'Failed Transaction Details';
+    final body = 'The Follow List are the Failed Transaction.';
 
     try {
       var data = {
