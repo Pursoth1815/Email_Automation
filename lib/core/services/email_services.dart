@@ -57,7 +57,7 @@ class EmailService {
   Future<bool> sendErrorEmail(List<Map<String, dynamic>> errorTransactions) async {
     const clientId = '';
     const clientSecret = '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';
-    const refreshToken = '1//04m0GcOFcefVRCgYIARAAGAQSNwF-L9IrDX-f0XG0FJkir3xUMbQZSTSJN9LnAXWCMaMx9MEmacO821UKK4F0xDraWuFVACD7oHA';
+    const refreshToken = '1//04CG3orYwSDhMCgYIARAAGAQSNwF-L9IrgtAXsxs3ym2iAjbBvI9YNtq6SGOZ5RftcAXQA0qYIHai3DXL-xzauGAHoHpHq5K5Hf8';
     const recipient = 'gokulhariharan005@gmail.com';
     const subject = 'Failed Transaction Details';
     const body = 'This is a test email.';

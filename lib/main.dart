@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:isolate';
-
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -60,8 +58,15 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     AppConstants.init(context);
 
-    return const MaterialApp(
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: RepositoryLists(),
+      builder: (context, child) {
+        return MediaQuery(
+          child: child!,
+          data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(1.0)),
+        );
+      },
     );
   }
 
@@ -69,19 +74,16 @@ class _MyAppState extends State<MyApp> {
     ReceivePort receivePort = ReceivePort();
     final sendPort = receivePort.sendPort;
     final transactionsJson = await _loadJsonFile();
-    log("start >>>>>>>>>>");
 
     final databaseHelper = SqfliteServices();
 
     await databaseHelper.insertTransactionDetails(transactionsJson);
 
     final errorTransactions = await databaseHelper.fetchErrorTransactions();
-    print("CHEekckkk ${errorTransactions.length}");
+
     Isolate.spawn(insertTransactions, [errorTransactions, sendPort, emailService], onExit: sendPort);
-    log("spawn complete >>>>>>>>>>");
 
     receivePort.listen((data) {
-      print("%%%%%%%%%%%%%%%% $data");
       receivePort.close();
     });
     if (errorTransactions.isNotEmpty) await databaseHelper.updateErrorTransactions(errorTransactions);

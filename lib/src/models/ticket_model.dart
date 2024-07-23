@@ -53,7 +53,6 @@ class TicketModel {
 
   // Create a TicketModel instance from a map
   factory TicketModel.fromMap(Map<String, dynamic> map) {
-    print("$map");
     return TicketModel(
       title: map['title'] ?? '',
       description: map['description'] ?? '',

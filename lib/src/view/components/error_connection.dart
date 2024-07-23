@@ -21,11 +21,9 @@ class ErrorConnection extends ConsumerStatefulWidget {
 }
 
 class _ErrorConnectionState extends ConsumerState<ErrorConnection> {
-  bool btn_loading = false;
   @override
   Widget build(BuildContext context) {
-    final repositoryState = ref.watch(networkNotifierProvider);
-
+    bool btn_loading = false;
     String img_path = ImagePath.error;
     if (widget.state == ErrorConnectionState.noInternet) img_path = ImagePath.no_internet;
     return Container(
@@ -68,16 +66,15 @@ class _ErrorConnectionState extends ConsumerState<ErrorConnection> {
                   });
                   Future.delayed(
                     Durations.extralong4,
-                    () {
-                      print("object");
-                      if (repositoryState) {
+                    () async {
+                      final networkNotifier = ref.read(networkNotifierProvider.notifier);
+                      final hasConnection = await networkNotifier.hasInternetConnection();
+
+                      if (hasConnection) {
                         widget.onClick!();
                       } else {
                         showCustomSnackBar(context, "Please turn on Internet Connection");
                       }
-                      setState(() {
-                        btn_loading = false;
-                      });
                     },
                   );
                 },

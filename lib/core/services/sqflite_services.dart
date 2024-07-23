@@ -101,7 +101,6 @@ class SqfliteServices {
         );
       }
     });
-    print("************ Updated *******************");
   }
 
   Future<bool> bulkInsert(List<Map<String, dynamic>> dataList) async {

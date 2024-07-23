@@ -60,8 +60,6 @@ class RepositoryNotifier extends StateNotifier<RepositoryState> {
   RepositoryNotifier(this._dbHelper) : super(RepositoryState(pageCount: 1, repositories: [], isLoading: false));
 
   void incrementPageCount() {
-    print(state.isFilterON);
-    print(state.maxCountReached);
     if (!state.maxCountReached && !state.isFilterON) {
       state = state.copyWith(pageCount: state.pageCount + 1, isPageLoading: true);
       Future.delayed(
@@ -102,8 +100,6 @@ class RepositoryNotifier extends StateNotifier<RepositoryState> {
         },
       ).toList();
 
-      print(dataList.length);
-
       bool flag = await _dbHelper.bulkInsert(dataList);
 
       if (flag) {
@@ -126,11 +122,8 @@ class RepositoryNotifier extends StateNotifier<RepositoryState> {
           .toList();
       log("${dataList.length}");
       log("${state.repositories}");
-      state = state.copyWith(
-          repositories: [...state.repositories, ...dataList],
-          isLoading: false,
-          maxCountReached: state.totalCount == [...state.repositories, ...dataList].length,
-          isPageLoading: false);
+      state =
+          state.copyWith(repositories: [...state.repositories, ...dataList], isLoading: false, maxCountReached: state.totalCount == [...state.repositories, ...dataList].length, isPageLoading: false);
     } catch (e) {
       state = state.copyWith(isLoading: false, errorMessage: e.toString(), isPageLoading: false);
     }
