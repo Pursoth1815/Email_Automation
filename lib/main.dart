@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:isolate';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -73,8 +74,7 @@ class _MyAppState extends State<MyApp> {
   Future? _insertTransactions() async {
     ReceivePort receivePort = ReceivePort();
     final sendPort = receivePort.sendPort;
-    final transactionsJson = await _loadJsonFile();
-    final emailCredentials = await _loadEmailCredentials();
+    final transactionsJson = await _loadJsonFile("lib/core/services/data/mail_json_data.json");
 
     final databaseHelper = SqfliteServices();
 
@@ -82,40 +82,39 @@ class _MyAppState extends State<MyApp> {
 
     final errorTransactions = await databaseHelper.fetchErrorTransactions();
 
-    Isolate.spawn(insertTransactions, [errorTransactions, emailCredentials, sendPort, emailService], onExit: sendPort);
+    Isolate.spawn(insertTransactions, [errorTransactions, sendPort, emailService], onExit: sendPort);
 
     receivePort.listen((data) {
+      log(data);
+      log(data.runtimeType.toString());
+      if (data == "true") {
+        databaseHelper.updateErrorTransactions(errorTransactions);
+      }
       receivePort.close();
     });
-    if (errorTransactions.isNotEmpty) await databaseHelper.updateErrorTransactions(errorTransactions);
   }
 
-  static Future<List<Map<String, dynamic>>> _loadJsonFile() async {
-    final jsonString = await rootBundle.loadString('lib/core/services/data/mail_json_data.json');
-    final List<dynamic> jsonList = jsonDecode(jsonString);
-    return jsonList.map((e) => e as Map<String, dynamic>).toList();
-  }
-
-  static Future<Map<String, dynamic>> _loadEmailCredentials() async {
-    final jsonString = await rootBundle.loadString('lib/core/services/data/mail.json');
-    final Map<String, dynamic> jsonMap = jsonDecode(jsonString);
-    return jsonMap;
+  static Future<dynamic> _loadJsonFile(String path) async {
+    final jsonString = await rootBundle.loadString(path);
+    final dynamic jsonList = jsonDecode(jsonString);
+    if (jsonList is List<Map<String, dynamic>>) {
+      return jsonList.map((e) => e).toList();
+    } else {
+      return jsonList;
+    }
   }
 
   static void insertTransactions(List<dynamic> params) async {
     final errorTransactions = params[0] as List<Map<String, dynamic>>;
-    final emailCred = params[1] as Map<String, dynamic>;
-    final sendPort = params[2] as SendPort;
-    final emailService = params[3] as EmailService;
-
+    final sendPort = params[1] as SendPort;
+    final emailService = params[2] as EmailService;
+    bool flag = false;
     if (errorTransactions.isNotEmpty) {
-      emailService.sendErrorEmail(errorTransactions, emailCred);
+      flag = await emailService.sendEmailv2(errorTransactions);
     } else {
       print('No error transactions found.');
     }
 
-    print("mail success");
-
-    sendPort.send(errorTransactions);
+    sendPort.send(flag.toString());
   }
 }

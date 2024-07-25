@@ -10,7 +10,6 @@ class NetworkNotifier extends StateNotifier<bool> {
 
   void _checkInitialConnection() async {
     final initialStatus = await hasInternetConnection();
-    print('Initial connection status: $initialStatus');
     _updateConnectionStatus(initialStatus);
   }
 
